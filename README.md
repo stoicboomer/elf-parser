@@ -6,9 +6,9 @@ I added some useful comments on elfparse.h if you want to try
 the methods yourself.
 
 ###TODO
-- [*] Elf header parse
-- [*] Program headers parse
-- [*] Section headers parse
-- [*] Strings dump
+- [x] Elf header parse
+- [x] Program headers parse
+- [x] Section headers parse
+- [x] Strings dump
 - [ ] Symbols parse
 - [ ] Relocations parse
