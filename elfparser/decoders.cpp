@@ -1,5 +1,8 @@
 #include "decoders.h"
 
+/* 
+    print magic bytes in hex
+*/
 void print_ident(unsigned char *e_ident){
     push_fmt();
     for (int i = 0; i < EI_NIDENT; i++){
@@ -38,12 +41,12 @@ const char *decode_ei_osabi(unsigned char *e_ident){
 		case ELFOSABI_SOLARIS:  return "UNIX - Solaris";
 		case ELFOSABI_AIX:      return "UNIX - AIX";
 		case ELFOSABI_IRIX:     return "UNIX - IRIX";
-		case ELFOSABI_FREEBSD:  return "UNIX - FreeBSD";
-		case ELFOSABI_TRU64:    return "UNIX - TRU64";
+        case ELFOSABI_FREEBSD:  return "UNIX - FreeBSD";
+        case ELFOSABI_TRU64:    return "UNIX - TRU64";
 		case ELFOSABI_MODESTO:  return "Novell - Modesto";
 		case ELFOSABI_OPENBSD:  return "UNIX - OpenBSD";
 		default:
-			return "Unknown OS ABI";
+		    return "Unknown OS ABI";
 	}
 }
 

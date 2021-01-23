@@ -2,13 +2,14 @@
 #include "elfparser/decoders.h"
 
 int main(void){
-    ElfParse e("./examples/parse_me64");
-    //print formatted elf header
+    //you can change the path to any 64-bit binary you want
+    ElfParse e("./examples/rle");
+
+    //just flexing some of the formatting methods
     e.print_ehdr();
-    //print formatted program headers
     e.print_phdr();
-    //print formatted sections headers
-    e.print_shdr(); 
+    e.print_shdr();
+    //e.print_strtab(false); big output
 
     return 0;
 }

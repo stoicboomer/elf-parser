@@ -19,13 +19,11 @@
 
 class ElfParse{
     /* EXCEPTIONS */
-    //Throwed if the file is not an actual elf file
     struct bad_elf_file : public std::exception{
         const char *err_msg;
         bad_elf_file(const char *msg) : err_msg(msg) {   }
         const char *what() const throw() { return err_msg; }
     };
-    //Throwed if the program can't read the file
     struct bad_file : public std::exception{
         const char *what() const throw(){ return "Can't open/read the file"; }
     };
@@ -40,17 +38,22 @@ public:
 
     typedef std::vector<Elf64_Phdr> phdr_vector;
     typedef std::vector<Elf64_Shdr> shdr_vector;
-    typedef std::vector<Elf64_Sym> sym_vector;
+    typedef std::vector<Elf64_Sym>  sym_vector;
 
     ElfParse(const char* path);
     
 	FILE *get_fd();
-
+    
+    //print formatted elf header
     void print_ehdr();
+    //print formatted program headers
     void print_phdr();
+    //print formatted section headers
     void print_shdr();
-    //print all '\0' terminated strings in all STRTAB sections
-    void print_strtab(bool offset);
+    //print all strings contained in the STRTAB sections
+    void print_strtab(bool offset, bool wich_section=false);
+    //print all formatted symbols
+    void print_sym();
 	
     //get elf header
     Elf64_Ehdr get_ehdr();
@@ -58,20 +61,24 @@ public:
     Elf64_Phdr get_phdr(size_t index);
     //get section header by index
     Elf64_Shdr get_shdr(size_t index);
-	//get .strtab section
+	//get .shstrtab section
 	Elf64_Shdr get_shstrtab();
-	//read entry on .strtab at Elf64_Shdr->sh_name offset 
-	std::string read_sh_name(size_t sh_name);
+	//get section name on .shstrtab
+	std::string get_sh_name(size_t sh_name);
+    //get symbol name 
+    std::string get_sym_name(uint32_t st_name, Elf64_Off sh_offset);
     
-    //returns a vector containing all segments/sections
+    //dump all program/section headers
     phdr_vector dump_phdr();
     shdr_vector dump_shdr();
-    //dump headers containing symbolic tables
+    //dump all symbolic headers
     shdr_vector dump_symshdr();
     //dump all symbols
     sym_vector dump_sym();
     //same as print_strtab output, but returned as a stringstream
-    std::stringstream dump_strtab();
+    std::stringstream dump_strtab(bool offset, bool wich_section=false);
+    //dump all STRTAB section headers
+    shdr_vector dump_strtabshdr();
 
     ~ElfParse();
 };

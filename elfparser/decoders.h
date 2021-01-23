@@ -13,6 +13,12 @@
 #define pop_fmt() \
     std::cout.copyfmt(old_fmt);
 
+/*
+    This headers is simply a collection of functions that
+    decode the defined machros in /usr/include/elf.h into a 
+    valid, human readble string. Useful for formatting stuff.
+*/
+
 /* ELF HEADER DECODING */
 void print_ident(unsigned char *e_ident);               
 const char *decode_ei_data(unsigned char *e_ident);
