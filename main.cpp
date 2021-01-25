@@ -3,7 +3,7 @@
 
 int main(void){
     //you can change the path to any 64-bit binary you want
-    ElfParse e("./examples/rle");
+    ElfParse e("/bin/ls");
 
     //just flexing some of the formatting methods
     e.print_ehdr();

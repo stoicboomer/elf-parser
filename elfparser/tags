@@ -1,0 +1,56 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ELF32_EHDR_SIZE	elfparse.h	5;"	d
+ELF64_EHDR_SIZE	elfparse.h	4;"	d
+ELF_PARSE	elfparse.h	2;"	d
+ElfParse	elfparse.cpp	/^ElfParse::ElfParse(const char *path) : elf_path(path){$/;"	f	class:ElfParse
+ElfParse	elfparse.h	/^class ElfParse{$/;"	c
+_ELF_DEC_	decoders.h	2;"	d
+bad_elf_file	elfparse.h	/^        bad_elf_file(const char *msg) : err_msg(msg) {   }$/;"	f	struct:ElfParse::bad_elf_file
+bad_elf_file	elfparse.h	/^    struct bad_elf_file : public std::exception{$/;"	s	class:ElfParse
+bad_file	elfparse.h	/^    struct bad_file : public std::exception{$/;"	s	class:ElfParse
+decode_e_machine	decoders.cpp	/^const char *decode_e_machine(unsigned int e_machine){$/;"	f
+decode_e_type	decoders.cpp	/^const char *decode_e_type(unsigned int e_type){$/;"	f
+decode_ei_class	decoders.cpp	/^const char *decode_ei_class(unsigned char *e_ident){$/;"	f
+decode_ei_data	decoders.cpp	/^const char *decode_ei_data(unsigned char *e_ident){$/;"	f
+decode_ei_osabi	decoders.cpp	/^const char *decode_ei_osabi(unsigned char *e_ident){$/;"	f
+decode_p_type	decoders.cpp	/^const char *decode_p_type(unsigned int p_type){$/;"	f
+decode_sh_type	decoders.cpp	/^const char *decode_sh_type(unsigned int sh_type){$/;"	f
+dump_phdr	elfparse.cpp	/^ElfParse::phdr_vector ElfParse::dump_phdr(){$/;"	f	class:ElfParse
+dump_shdr	elfparse.cpp	/^ElfParse::shdr_vector ElfParse::dump_shdr(){$/;"	f	class:ElfParse
+dump_strtab	elfparse.cpp	/^std::stringstream ElfParse::dump_strtab(bool offset, bool wich_section){$/;"	f	class:ElfParse
+dump_strtabshdr	elfparse.cpp	/^ElfParse::shdr_vector ElfParse::dump_strtabshdr(){$/;"	f	class:ElfParse
+dump_sym	elfparse.cpp	/^ElfParse::sym_vector ElfParse::dump_sym(){$/;"	f	class:ElfParse
+dump_symshdr	elfparse.cpp	/^ElfParse::shdr_vector ElfParse::dump_symshdr(){$/;"	f	class:ElfParse
+elf_file	elfparse.h	/^    FILE  *elf_file; $/;"	m	class:ElfParse
+elf_hdr	elfparse.h	/^    Elf64_Ehdr elf_hdr;$/;"	m	class:ElfParse
+elf_ifstream	elfparse.h	/^    std::ifstream elf_ifstream;$/;"	m	class:ElfParse
+elf_path	elfparse.h	/^    const char *elf_path;$/;"	m	class:ElfParse
+err_msg	elfparse.h	/^        const char *err_msg;$/;"	m	struct:ElfParse::bad_elf_file
+get_ehdr	elfparse.cpp	/^Elf64_Ehdr ElfParse::get_ehdr(){$/;"	f	class:ElfParse
+get_fd	elfparse.cpp	/^FILE *ElfParse::get_fd(){$/;"	f	class:ElfParse
+get_phdr	elfparse.cpp	/^Elf64_Phdr ElfParse::get_phdr(size_t index){$/;"	f	class:ElfParse
+get_sh_name	elfparse.cpp	/^std::string ElfParse::get_sh_name(size_t sh_name){$/;"	f	class:ElfParse
+get_shdr	elfparse.cpp	/^Elf64_Shdr ElfParse::get_shdr(size_t index){$/;"	f	class:ElfParse
+get_shstrtab	elfparse.cpp	/^Elf64_Shdr ElfParse::get_shstrtab(){$/;"	f	class:ElfParse
+get_sym_name	elfparse.cpp	/^std::string ElfParse::get_sym_name(uint32_t st_name, Elf64_Off sh_offset){$/;"	f	class:ElfParse
+phdr_vector	elfparse.h	/^    typedef std::vector<Elf64_Phdr> phdr_vector;$/;"	t	class:ElfParse
+pop_fmt	decoders.h	13;"	d
+print_ehdr	elfparse.cpp	/^void ElfParse::print_ehdr(){$/;"	f	class:ElfParse
+print_ident	decoders.cpp	/^void print_ident(unsigned char *e_ident){$/;"	f
+print_p_flags	decoders.cpp	/^void print_p_flags(unsigned int p_flags){$/;"	f
+print_phdr	elfparse.cpp	/^void ElfParse::print_phdr(){$/;"	f	class:ElfParse
+print_shdr	elfparse.cpp	/^void ElfParse::print_shdr(){$/;"	f	class:ElfParse
+print_strtab	elfparse.cpp	/^void ElfParse::print_strtab(bool offset, bool wich_section){$/;"	f	class:ElfParse
+print_sym	elfparse.cpp	/^void ElfParse::print_sym(){$/;"	f	class:ElfParse
+push_fmt	decoders.h	9;"	d
+shdr_vector	elfparse.h	/^    typedef std::vector<Elf64_Shdr> shdr_vector;$/;"	t	class:ElfParse
+sym_vector	elfparse.h	/^    typedef std::vector<Elf64_Sym>  sym_vector;$/;"	t	class:ElfParse
+test	elfparse.cpp	/^ElfParse::shdr_vector test(std::initializer_list<unsigned int> l){$/;"	f
+what	elfparse.h	/^        const char *what() const throw() { return err_msg; }$/;"	f	struct:ElfParse::bad_elf_file
+what	elfparse.h	/^        const char *what() const throw(){ return "Can't open\/read the file"; }$/;"	f	struct:ElfParse::bad_file
+~ElfParse	elfparse.cpp	/^ElfParse::~ElfParse(){$/;"	f	class:ElfParse

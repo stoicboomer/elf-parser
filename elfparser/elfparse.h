@@ -28,10 +28,8 @@ class ElfParse{
         const char *what() const throw(){ return "Can't open/read the file"; }
     };
 
-
     const char *elf_path;
     FILE  *elf_file; 
-    std::ifstream elf_ifstream;
     Elf64_Ehdr elf_hdr;
 
 public:
@@ -50,9 +48,9 @@ public:
     void print_phdr();
     //print formatted section headers
     void print_shdr();
-    //print all strings contained in the STRTAB sections
+    //print all strings contained in the STRTAB sections (.rodata is not parsed)
     void print_strtab(bool offset, bool wich_section=false);
-    //print all formatted symbols
+    //TODO: print all formatted symbols
     void print_sym();
 	
     //get elf header
@@ -65,20 +63,21 @@ public:
 	Elf64_Shdr get_shstrtab();
 	//get section name on .shstrtab
 	std::string get_sh_name(size_t sh_name);
-    //get symbol name 
+    //TODO: get symbol name 
     std::string get_sym_name(uint32_t st_name, Elf64_Off sh_offset);
     
     //dump all program/section headers
     phdr_vector dump_phdr();
     shdr_vector dump_shdr();
-    //dump all symbolic headers
-    shdr_vector dump_symshdr();
+    //dump by specific program/section header type
+    //check the elf manual for reference
+    phdr_vector dump_phdr_type(unsigned int type);
+    shdr_vector dump_shdr_type(unsigned int type);
+
     //dump all symbols
     sym_vector dump_sym();
     //same as print_strtab output, but returned as a stringstream
     std::stringstream dump_strtab(bool offset, bool wich_section=false);
-    //dump all STRTAB section headers
-    shdr_vector dump_strtabshdr();
 
     ~ElfParse();
 };

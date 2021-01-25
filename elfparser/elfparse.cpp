@@ -24,7 +24,6 @@ ElfParse::ElfParse(const char *path) : elf_path(path){
         throw bad_elf_file("Unsupported ELF version");
     } 
     rewind(elf_file);
-    elf_ifstream = std::ifstream(elf_path, std::ios_base::binary);
 }
 
 FILE *ElfParse::get_fd(){
@@ -152,7 +151,7 @@ Elf64_Shdr ElfParse::get_shstrtab(){
 
 /*
     Elf64_Shdr->sh_name is an index in the .shstrtab section,
-    thanks to that we can extract the string name
+    thanks to that we can extract the string name of the section
 */
 std::string ElfParse::get_sh_name(size_t sh_name){
     if (elf_hdr.e_shstrndx == SHN_UNDEF)
@@ -168,6 +167,7 @@ std::string ElfParse::get_sh_name(size_t sh_name){
 	return s;
 }
 
+//TODO:
 std::string ElfParse::get_sym_name(uint32_t st_name, Elf64_Off sh_offset){
     fseek(elf_file, st_name + sh_offset, SEEK_SET);
     std::string s("");
@@ -195,50 +195,48 @@ ElfParse::shdr_vector ElfParse::dump_shdr(){
     return v;
 }
 
-/*
-    a SYMTAB or DYNSYM section contains a symbol table (array
-    of Elf64_Sym structs) that holds informations for every symbolic
-    definitions and references. This functions extracts every
-    section header that points a symbolic table.
-*/
-ElfParse::shdr_vector ElfParse::dump_symshdr(){
-    ElfParse::shdr_vector v; 
+ElfParse::phdr_vector ElfParse::dump_phdr_type(unsigned int type){
+    ElfParse::phdr_vector v;
     for (int i = 0; i < elf_hdr.e_shnum; i++){
-        Elf64_Shdr shdr = get_shdr(i);
-        if (shdr.sh_type == SHT_SYMTAB || shdr.sh_type == SHT_DYNSYM)
-            v.push_back(shdr);
-    }
-    return v;
-}
-
-/* 
-    Thanks to ElfParse::dump_symshdr() we now have all sections
-    that define a symbolic table, we just seek to the section
-    and extract all Elf64_Sym structs.
-*/
-//TODO: optimize, dump_symshdr() isn't necessary, two loops have been made
-ElfParse::sym_vector ElfParse::dump_sym(){
-    ElfParse::sym_vector v;
-    ElfParse::shdr_vector sym_shdr = dump_symshdr();
-    for (Elf64_Shdr shdr : sym_shdr){
-        fseek(elf_file, shdr.sh_offset, SEEK_SET); 
-        while (ftell(elf_file) < shdr.sh_offset + shdr.sh_size){
-            Elf64_Sym sym;
-            fread(&sym, shdr.sh_entsize, 1, elf_file);
-            v.push_back(sym);
+        Elf64_Phdr phdr = get_phdr(i);
+        if (phdr.p_type == type){
+            v.push_back(phdr);
         }
     }
     return v;
 }
 
-//TODO: replace all methods exctracting section hdrs of specific
-//      type into one using std::initializer_list
-ElfParse::shdr_vector ElfParse::dump_strtabshdr(){
+ElfParse::shdr_vector ElfParse::dump_shdr_type(unsigned int type){
     ElfParse::shdr_vector v;
     for (int i = 0; i < elf_hdr.e_shnum; i++){
         Elf64_Shdr shdr = get_shdr(i);
-        if (shdr.sh_type == SHT_STRTAB){
+        if (shdr.sh_type == type){
             v.push_back(shdr);
+        }
+    }
+    return v;
+}
+
+/*
+    a SYMTAB or DYNSYM section contains a symbol table (array
+    of Elf64_Sym structs) that holds informations for every symbolic
+    definitions and references. 
+
+    We extract every SHT_SYMTAB and SHT_DYNSYM section
+    that define a symbolic table, we seek to the section
+    and extract all Elf64_Sym structs.
+*/
+ElfParse::sym_vector ElfParse::dump_sym(){
+    ElfParse::sym_vector v;
+    for (int i = 0; i < elf_hdr.e_shnum; i++){
+        Elf64_Shdr shdr = get_shdr(i);
+        if (shdr.sh_type == SHT_SYMTAB || shdr.sh_type == SHT_DYNSYM){
+            fseek(elf_file, shdr.sh_offset, SEEK_SET); 
+            while (ftell(elf_file) < shdr.sh_offset + shdr.sh_size){
+                Elf64_Sym sym;
+                fread(&sym, shdr.sh_entsize, 1, elf_file);
+                v.push_back(sym);
+            }
         }
     }
     return v;
@@ -257,21 +255,22 @@ std::stringstream ElfParse::dump_strtab(bool offset, bool wich_section){
     }
     for (int i = 0; i < elf_hdr.e_shnum; i++){
         Elf64_Shdr shdr = get_shdr(i);
-        if (shdr.sh_type != SHT_STRTAB) continue;
-        if (wich_section){
-            buff << get_sh_name(shdr.sh_name) << ":\n"; 
-        }
+        if (shdr.sh_type == SHT_STRTAB){
+            if (wich_section){
+                buff << get_sh_name(shdr.sh_name) << ":\n"; 
+            }
 
-        char c;
-        fseek(elf_file, shdr.sh_offset + 1, SEEK_SET);
-        while (ftell(elf_file) < shdr.sh_offset + shdr.sh_size){
-            if (offset){
-                buff << ftell(elf_file) << " ";
+            char c;
+            fseek(elf_file, shdr.sh_offset + 1, SEEK_SET);
+            while (ftell(elf_file) < shdr.sh_offset + shdr.sh_size){
+                if (offset){
+                    buff << ftell(elf_file) << " ";
+                }
+                while ((c = fgetc(elf_file)) != '\0'){
+                    buff << c;
+                }
+                buff << std::endl;
             }
-            while ((c = fgetc(elf_file)) != '\0'){
-                buff << c;
-            }
-            buff << std::endl;
         }
     }
     rewind(elf_file);
