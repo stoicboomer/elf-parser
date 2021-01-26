@@ -5,11 +5,13 @@ int main(void){
     //you can change the path to any 64-bit binary you want
     ElfParse e("/bin/ls");
 
-    //just flexing some of the formatting methods
-    e.print_ehdr();
-    e.print_phdr();
-    e.print_shdr();
-    //e.print_strtab(false); big output
+    e.print_ehdr(); //print formatted Elf header
+    e.print_phdr(); //print formatted Program headers
+    e.print_shdr(); //print formatted Section headers
+
+    //big output:
+    //e.print_sym()  print formatted symbols
+    //e.print_strtab(false); print all strings in the STRTAB sections
 
     return 0;
 }

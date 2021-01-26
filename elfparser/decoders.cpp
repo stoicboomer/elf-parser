@@ -86,7 +86,6 @@ const char *decode_e_machine(unsigned int e_machine){
     }
 }
 
-//first time i find an use of bitwise operators, wow..
 void print_p_flags(unsigned int p_flags){
     if ((p_flags & PF_R) == PF_R) std::cout << "r"; //READ
     else                          std::cout << "-";
@@ -131,5 +130,27 @@ const char *decode_sh_type(unsigned int sh_type){
 		case SHT_HIUSER:    return "HIUSER";
 		default:
 			return "NULL";
+    }
+}
+
+const char *decode_st_type(unsigned int st_type){
+    switch (ELF64_ST_TYPE(st_type)){
+        case STT_NOTYPE:        return "NOTYPE";
+        case STT_OBJECT:        return "OBJECT";
+        case STT_FUNC:          return "FUNC";
+        case STT_SECTION:       return "SECTION";
+        case STT_FILE:          return "FILE";
+        default:
+            return "NULL";
+    }
+}
+
+const char *decode_st_bind(unsigned int st_type){
+    switch (ELF64_ST_BIND(st_type)){
+        case STB_LOCAL:         return "LOCAL";
+        case STB_GLOBAL:        return "GLOBAL";
+        case STB_WEAK:          return "WEAK";
+        default:
+            return "NULL";
     }
 }

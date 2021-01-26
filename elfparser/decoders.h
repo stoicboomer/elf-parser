@@ -35,4 +35,8 @@ const char *decode_p_type(unsigned int p_type);
 /* SECTION HEADER DECODING */
 const char *decode_sh_type(unsigned int sh_type);
 
+/* SYMBOL DECODING */
+const char *decode_st_type(unsigned int st_info);
+const char *decode_st_bind(unsigned int st_info);
+
 #endif

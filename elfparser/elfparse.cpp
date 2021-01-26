@@ -57,12 +57,12 @@ void ElfParse::print_ehdr(){
 }
 
 void ElfParse::print_phdr(){
-    puts("    offset      size   vaddr       vsize  perm name        \n"
+    puts("    offset      size     vaddr       vsize    perm name\n"
          "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――");
     for (int i = 0; i < elf_hdr.e_phnum; i++){
         Elf64_Phdr phdr = get_phdr(i);
 
-        printf("%-3d 0x%08x  0x%-4x 0x%08x  0x%-4x ", i, phdr.p_offset, 
+        printf("%-3d 0x%08x  0x%-6x 0x%08x  0x%-6x ", i, phdr.p_offset, 
                 phdr.p_filesz, phdr.p_vaddr, phdr.p_memsz); 
         print_p_flags(phdr.p_flags);
         printf("  %s\n", decode_p_type(phdr.p_type));
@@ -74,7 +74,7 @@ void ElfParse::print_shdr(){
          "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――");
     for (int i = 0; i < elf_hdr.e_shnum; i++){
         Elf64_Shdr shdr = get_shdr(i);
-        printf("%-3d 0x%08x  0x%-4x 0x%08x  %-10s %s\n", i, shdr.sh_offset, 
+        printf("%-3d 0x%08x  0x%-6x 0x%08x  %-10s %s\n", i, shdr.sh_offset, 
                 shdr.sh_size, shdr.sh_addr, decode_sh_type(shdr.sh_type),
 				get_sh_name(shdr.sh_name).c_str()); 
     }
@@ -85,20 +85,35 @@ void ElfParse::print_strtab(bool offset, bool wich_section){
 }
 
 /*
- *  TODO:
-    Alright this is where things get a little bit tricky.
-    As i'm searching i can't find any way to directly 
-    enumerate in wich section is located the symbol
-    name... I'm tired i need a break.
+NOTE:
+    The shdr sh_link member in the SHT_SYMBTA and SHT_DYNSYM
+    sections contains the section header index of the associated 
+    string table where we can extract the string name of the symbols.
+
 */
 void ElfParse::print_sym(){
-    /*
-         . 
-         . 
-         . 
-         .
-         .
-    */
+    puts("     value      bind     type     size  name         \n"
+         "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――");
+    for (int i = 0; i < elf_hdr.e_shnum; i++){
+        Elf64_Shdr shdr = get_shdr(i);
+        if (shdr.sh_type == SHT_SYMTAB || shdr.sh_type == SHT_DYNSYM){
+            //get associated strtab
+            Elf64_Shdr strtab = get_shdr(shdr.sh_link);
+            //start reading symbolic entries, 
+            //we fseek in the loop because get_sym_name() rewinds the file
+            fseek(elf_file, shdr.sh_offset, SEEK_SET);
+            for (int j = 1; ftell(elf_file) < (shdr.sh_offset + shdr.sh_size); j++){
+                Elf64_Sym sym;
+                fread(&sym, shdr.sh_entsize, 1, elf_file); 
+
+                printf("%-4d 0x%08x %-8s %-8s %-5d %s\n", j-1, sym.st_value,
+                        decode_st_bind(sym.st_info), decode_st_type(sym.st_info),
+                        sym.st_size, get_sym_name(sym.st_name, strtab.sh_offset).c_str());
+
+                fseek(elf_file, shdr.sh_offset + (shdr.sh_entsize * j), SEEK_SET);
+            }
+        }
+    }
 }
 
 Elf64_Ehdr ElfParse::get_ehdr(){
@@ -167,15 +182,14 @@ std::string ElfParse::get_sh_name(size_t sh_name){
 	return s;
 }
 
-//TODO:
-std::string ElfParse::get_sym_name(uint32_t st_name, Elf64_Off sh_offset){
-    fseek(elf_file, st_name + sh_offset, SEEK_SET);
+std::string ElfParse::get_sym_name(size_t st_name, size_t strtab_off){
+    fseek(elf_file, st_name + strtab_off, SEEK_SET);
     std::string s("");
     char c;
 	while ((c = fgetc(elf_file)) != '\0'){
 		s.push_back(c);
 	}
-    rewind(elf_file); 
+    rewind(elf_file);
     return s;
 }
 

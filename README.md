@@ -5,10 +5,11 @@ I added some useful comments on elfparse.h and elfparse.cpp
 if you want to try the methods yourself, or try to understand 
 something.
 
-###TODO
-- [x] Elf header parse
-- [x] Program headers parse
-- [x] Section headers parse
-- [x] Strings dump
-- [ ] Symbols parse
-- [ ] Relocations parse
+### TODO
+- [x] Elf64_Ehdr parse
+- [x] ELf64_Phdr parse
+- [x] Elf64_Shdr parse
+- [x] Elf64_Sym  parse
+- [ ] Elf64_Rel  parse
+- [ ] Elf64_Nhdr parse
+- [x] String tables parse

@@ -64,7 +64,7 @@ public:
 	//get section name on .shstrtab
 	std::string get_sh_name(size_t sh_name);
     //TODO: get symbol name 
-    std::string get_sym_name(uint32_t st_name, Elf64_Off sh_offset);
+    std::string get_sym_name(size_t st_name, size_t sh_offset);
     
     //dump all program/section headers
     phdr_vector dump_phdr();
